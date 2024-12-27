@@ -1,0 +1,221 @@
+<link rel="stylesheet" href="/assets/gym_management/css/customer_profile.css">
+<!-- <div class="profile-page">
+    <h1>Welcome to Your Profile</h1>
+    <p><b>Active Plan:</b> {{ active_plan }}</p>
+    <p><b>Remaining Days:</b> {{ remaining_days }}</p>
+    <p><b>Allocated Trainer:</b> {{ allocated_trainer }}</p>
+    <h3>Past Plans:</h3>
+    <ul>
+        {% for plan in past_plans %}
+            <li>{{ plan.name }} ({{ plan.start_date }} to {{ plan.end_date }})</li>
+        {% endfor %}
+    </ul>
+</div> -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-custom {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+        }
+
+        .list-group-item {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .list-group-item span {
+            font-weight: bold;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .highlight {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-custom p-4">
+                    <h2 class="text-center header-title mb-4">Customer Profile</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <span>Active Plan:</span> <span id="active_plan" class="highlight">Loading...</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span>Remaining Days:</span> <span id="remaining_days" class="highlight">Loading...</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span>Trainer Name:</span> <span id="trainer_name" class="highlight">Loading...</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span>Trainer Contact:</span> <span id="trainer_contact" class="highlight">Loading...</span>
+                        </li>
+                    </ul>
+                    <h5 class="mt-4">Past Plans</h5>
+                    <ul id="past_plans" class="list-group list-group-numbered">
+                        <!-- Past plans will be appended here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Your JS -->
+    <script>
+        function fetchCustomerProfile() {
+            // Use the Fetch API to get data from the server
+            fetch('/api/method/your_app.customer_profile.get_customer_profile')
+                .then(response => response.json())  // Parse the JSON response
+                .then(data => {
+                    // Dynamically update the page with customer data
+                    document.getElementById('active_plan').innerText = data.active_plan || 'N/A';
+                    document.getElementById('remaining_days').innerText = (data.remaining_days ? data.remaining_days + ' days left' : 'N/A');
+                    document.getElementById('trainer_name').innerText = data.trainer_name || 'No trainer assigned';
+                    document.getElementById('trainer_contact').innerText = data.trainer_contact || 'N/A';
+
+                    // Update past plans
+                    const pastPlansList = document.getElementById('past_plans');
+                    pastPlansList.innerHTML = '';  // Clear previous list
+                    data.past_plans.forEach(plan => {
+                        let listItem = document.createElement('li');
+                        listItem.className = 'list-group-item';
+                        listItem.textContent = `${plan.name} - ${plan.start_date}`;
+                        pastPlansList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching customer profile:', error);
+                });
+        }
+
+        // Call the function on page load
+        document.addEventListener('DOMContentLoaded', fetchCustomerProfile);
+    </script>
+</body>
+
+</html>
+<link rel="stylesheet" href="/assets/gym_management/css/styles.css">
+<link rel="stylesheet" href="/assets/your_app_name/css/animate.min.css">
+
+<style>
+    :root {
+        --bg-color-light: #ffffff;
+        --text-color-light: #000000;
+        --bg-color-dark: #121212;
+        --text-color-dark: #ffffff;
+        --bg-color-custom: #ffe4c4;
+        --text-color-custom: #6b4226;
+        
+        --bg-color: var(--bg-color-light);
+        --text-color: var(--text-color-light);
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-size: var(--text-base);
+        transition: all 0.5s ease;
+    }
+
+    .error-page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+    }
+
+    .animated-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        animation: bounce 2s infinite;
+        margin: 10px;
+    }
+
+    .animated-button:hover {
+        background-color: #45a049;
+    }
+
+    [data-tooltip] {
+        position: relative;
+        cursor: pointer;
+    }
+
+    [data-tooltip]:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: black;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        white-space: nowrap;
+    }
+</style>
+
+<script>
+    window.is_404 = true;
+
+    function changeTheme(theme) {
+        const root = document.documentElement;
+        if (theme === 'light') {
+            root.style.setProperty('--bg-color', 'var(--bg-color-light)');
+            root.style.setProperty('--text-color', 'var(--text-color-light)');
+        } else if (theme === 'dark') {
+            root.style.setProperty('--bg-color', 'var(--bg-color-dark)');
+            root.style.setProperty('--text-color', 'var(--text-color-dark)');
+        } else if (theme === 'custom') {
+            root.style.setProperty('--bg-color', 'var(--bg-color-custom)');
+            root.style.setProperty('--text-color', 'var(--text-color-custom)');
+        }
+    }
+</script>
+
+<div class="error-page">
+    <!-- Welcome Message -->
+    <h1 class="animate__animated animate__bounce">Welcome to FitPro Gym!</h1>
+
+    <!-- Join Now Button -->
+    <a href="http://127.0.0.1:8001/for-fill-data-acces-to-gym/new">
+        <button class="animated-button">Join Now!</button>
+    </a>
+
+    <!-- Theme Switcher Buttons -->
+    <div>
+        <button onclick="changeTheme('light')" class="animated-button" style="background-color: #f0f0f0; color: #000;">Light Theme</button>
+        <button onclick="changeTheme('dark')" class="animated-button" style="background-color: #121212; color: #fff;">Dark Theme</button>
+        <button onclick="changeTheme('custom')" class="animated-button" style="background-color: #ffe4c4; color: #6b4226;">Custom Theme</button>
+    </div>
+
+    <!-- Locker Booking Button -->
+    <a href="http://127.0.0.1:8001/locker-book/new">
+        <button class="animated-button" data-tooltip="Click to book a locker!">Book Locker</button>
+    </a>
+</div>
